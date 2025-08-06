@@ -1,0 +1,17 @@
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\UsbAccessoryReceiver.csproj.AssemblyReference.cache
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\UsbAccessoryReceiver.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\UsbAccessoryReceiver.AssemblyInfoInputs.cache
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\UsbAccessoryReceiver.AssemblyInfo.cs
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\UsbAccessoryReceiver.csproj.CoreCompileInputs.cache
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\bin\Debug\net9.0\UsbAccessoryReceiver.exe
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\bin\Debug\net9.0\UsbAccessoryReceiver.deps.json
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\bin\Debug\net9.0\UsbAccessoryReceiver.runtimeconfig.json
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\bin\Debug\net9.0\UsbAccessoryReceiver.dll
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\bin\Debug\net9.0\UsbAccessoryReceiver.pdb
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\bin\Debug\net9.0\H.InputSimulator.dll
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\UsbAcces.F56CB4E8.Up2Date
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\UsbAccessoryReceiver.dll
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\refint\UsbAccessoryReceiver.dll
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\UsbAccessoryReceiver.pdb
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\UsbAccessoryReceiver.genruntimeconfig.cache
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\ref\UsbAccessoryReceiver.dll
