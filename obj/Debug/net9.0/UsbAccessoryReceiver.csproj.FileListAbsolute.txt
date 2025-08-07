@@ -15,3 +15,4 @@ C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\refint\Usb
 C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\UsbAccessoryReceiver.pdb
 C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\UsbAccessoryReceiver.genruntimeconfig.cache
 C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\ref\UsbAccessoryReceiver.dll
+C:\Users\gikhu\Documents\dotnet\UsbAccessoryReceiver\obj\Debug\net9.0\UsbAccessoryReceiver.sourcelink.json

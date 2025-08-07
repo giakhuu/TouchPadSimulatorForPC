@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UsbAccessoryReceiver")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bfefa93b8c6cec73bcdf92207ed6acc89c0e6487")]
 [assembly: System.Reflection.AssemblyProductAttribute("UsbAccessoryReceiver")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UsbAccessoryReceiver")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
