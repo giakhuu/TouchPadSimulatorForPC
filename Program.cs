@@ -2,29 +2,21 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Text;
 
 class Program
 {
-    // P/Invoke cho SendInput
+    // P/Invoke cho SendInput (giữ nguyên)
     [DllImport("user32.dll", SetLastError = true)]
     static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
 
     [StructLayout(LayoutKind.Sequential)]
-    struct INPUT
-    {
-        public uint type;
-        public MOUSEINPUT mi;
-    }
-
+    struct INPUT { public uint type; public MOUSEINPUT mi; }
     [StructLayout(LayoutKind.Sequential)]
     struct MOUSEINPUT
     {
-        public int dx;
-        public int dy;
-        public uint mouseData;
-        public uint dwFlags;
-        public uint time;
-        public IntPtr dwExtraInfo;
+        public int dx; public int dy; public uint mouseData;
+        public uint dwFlags; public uint time; public IntPtr dwExtraInfo;
     }
 
     const uint INPUT_MOUSE = 0;
@@ -69,19 +61,42 @@ class Program
         SendInput(2, inputs, Marshal.SizeOf(typeof(INPUT)));
     }
 
+    // Lấy IP địa phương phù hợp để reply (connect tạm UDP đến remote để biết local endpoint)
+    static IPAddress GetLocalAddressForRemote(IPAddress remote)
+    {
+        try
+        {
+            using var sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            sock.Connect(remote, 65530); // port arbitrary
+            if (sock.LocalEndPoint is IPEndPoint lep)
+                return lep.Address;
+        }
+        catch
+        {
+            // fallback to first IPv4 non-loopback
+            foreach (var ip in Dns.GetHostEntry(Dns.GetHostName()).AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(ip))
+                    return ip;
+            }
+        }
+        return IPAddress.Loopback;
+    }
+
     static void Main()
     {
         const int PORT = 5000;
         using var udp = new UdpClient(PORT);
-        Console.WriteLine($"Listening for UDP on port {PORT}...");
+        Console.WriteLine($"Responder & Controller listening on UDP port {PORT}...");
 
-        var remoteEP = new IPEndPoint(IPAddress.Any, 0);
+        IPEndPoint remote = new IPEndPoint(IPAddress.Any, 0);
+
         while (true)
         {
-            byte[] buf;
+            byte[] data;
             try
             {
-                buf = udp.Receive(ref remoteEP);
+                data = udp.Receive(ref remote); // blocking
             }
             catch (SocketException se)
             {
@@ -89,28 +104,55 @@ class Program
                 break;
             }
 
-            if (buf.Length < 1) continue;
-            byte type = buf[0];
-            Console.WriteLine($"Received type={type:X2}, data={BitConverter.ToString(buf)}");
+            if (data == null || data.Length == 0) continue;
 
-            if (type == 0x00 && buf.Length >= 3)
+            // Nếu first byte tương ứng control (0x00/0x01/0x02) và độ dài phù hợp => control
+            bool maybeControl = (data.Length >= 1) &&
+                (data[0] == 0x00 || data[0] == 0x01 || data[0] == 0x02);
+
+            if (maybeControl)
             {
-                // Chuyển sang signed
-                sbyte dx = (sbyte)buf[1];
-                sbyte dy = (sbyte)buf[2];
-                MouseMove(dx, dy);
-                Console.WriteLine($"Move dx={dx}, dy={dy}");
+                byte type = data[0];
+                Console.WriteLine($"Control packet from {remote.Address}:{remote.Port} - type=0x{type:X2}, raw={BitConverter.ToString(data)}");
+                if (type == 0x00 && data.Length >= 3)
+                {
+                    sbyte dx = (sbyte)data[1];
+                    sbyte dy = (sbyte)data[2];
+                    MouseMove(dx, dy);
+                    Console.WriteLine($"Move dx={dx}, dy={dy}");
+                }
+                else if (type == 0x01)
+                {
+                    MouseLeftClick();
+                    Console.WriteLine("Left click");
+                }
+                else if (type == 0x02)
+                {
+                    MouseRightClick();
+                    Console.WriteLine("Right click");
+                }
+                continue;
             }
-            else if (type == 0x01)
+
+            // Không phải control -> thử decode là discovery (text)
+            string txt = null;
+            try { txt = Encoding.UTF8.GetString(data).Trim(); } catch { txt = null; }
+
+            if (!string.IsNullOrEmpty(txt) && txt.StartsWith("DISCOVER_TOUCHPAD", StringComparison.OrdinalIgnoreCase))
             {
-                MouseLeftClick();
-                Console.WriteLine("Left click");
+                Console.WriteLine($"Discovery from {remote.Address}:{remote.Port} payload='{txt}'");
+
+                // Lấy IP local phù hợp để gửi về phone (giúp phone biết IP PC)
+                IPAddress local = GetLocalAddressForRemote(remote.Address);
+                string reply = $"TOUCHPAD_OK:{local}"; // e.g. "TOUCHPAD_OK:192.168.244.149"
+                byte[] respBytes = Encoding.UTF8.GetBytes(reply);
+                udp.Send(respBytes, respBytes.Length, remote); // gửi unicast tới sender
+                Console.WriteLine($"Replied '{reply}' to {remote.Address}");
+                continue;
             }
-            else if (type == 0x02)
-            {
-                MouseRightClick();
-                Console.WriteLine("Right click");
-            }
+
+            // Nếu tới đây mà không phải control hay discovery -> log và ignore
+            Console.WriteLine($"Unknown packet from {remote.Address}:{remote.Port} - raw={BitConverter.ToString(data)}");
         }
     }
 }
